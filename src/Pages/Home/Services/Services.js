@@ -3,10 +3,10 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { Container } from '@mui/material';
-import Service from '../Home/Service/Service';
-import fluoride from '../../images/fluoride.png'
-import cavity from '../../images/cavity.png'
-import whitening from '../../images/whitening.png'
+import fluoride from '../../../images/fluoride.png'
+import cavity from '../../../images/cavity.png'
+import whitening from '../../../images/whitening.png'
+import Service from '../Service/Service';
 
 const services = [
     {
