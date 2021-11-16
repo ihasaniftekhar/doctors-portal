@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -6,6 +6,7 @@ import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { TextField } from '@mui/material';
+import useAuth from '../../../hooks/useAuth';
 
 const style = {
     position: 'absolute',
@@ -20,13 +21,48 @@ const style = {
 };
 
 
-const BookingModal = ({ openBooking, handleBookingClose, booking, date }) => {
+const BookingModal = ({ openBooking, handleBookingClose, booking, date, setBookingSuccess }) => {
 
     const { name, time } = booking;
+    const { user } = useAuth();
+    const initialInfo = { patientName: user.displayName, email: user.email, phone: '' };
 
-    const handleBookSubmit = (e) => {
-        alert('Submitted');
-        handleBookingClose();
+    const [bookingInfo, setBookingInfo] = useState(initialInfo);
+
+    const handleOnBlur = (e) => {
+        const field = e.target.name;
+        const value = e.target.value;
+        const newInfo = { ...bookingInfo };
+        newInfo[field] = value;
+        setBookingInfo(newInfo);
+    }
+
+    const handleBookingSubmit = (e) => {
+        // collect data 
+        const appointment = {
+            ...bookingInfo,
+            time,
+            serviceName: name,
+            date: date.toLocaleDateString()
+        }
+
+        // send data
+        fetch('http://localhost:5000/appointments', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(appointment)
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.insertedId) {
+                    setBookingSuccess(true);
+                    handleBookingClose();
+                }
+            });
+
+        console.log(appointment);
         e.preventDefault();
     }
 
@@ -47,7 +83,7 @@ const BookingModal = ({ openBooking, handleBookingClose, booking, date }) => {
                     <Typography id="transition-modal-title" variant="h6" component="h2">
                         {name}
                     </Typography>
-                    <form onSubmit={handleBookSubmit}>
+                    <form onSubmit={handleBookingSubmit}>
                         <TextField
                             disabled
                             sx={{ width: '90%', m: 1 }}
@@ -58,19 +94,25 @@ const BookingModal = ({ openBooking, handleBookingClose, booking, date }) => {
                         <TextField
                             sx={{ width: '90%', m: 1 }}
                             id="outlined-size-small"
-                            defaultValue="Your Name"
+                            defaultValue={user.displayName}
+                            name="patientName"
+                            onBlur={handleOnBlur}
                             size="small"
                         />
                         <TextField
                             sx={{ width: '90%', m: 1 }}
                             id="outlined-size-small"
-                            defaultValue="Your Email"
+                            defaultValue={user.email}
+                            name="email"
+                            onBlur={handleOnBlur}
                             size="small"
                         />
                         <TextField
                             sx={{ width: '90%', m: 1 }}
                             id="outlined-size-small"
                             defaultValue="Phone Number"
+                            onBlur={handleOnBlur}
+                            name="phone"
                             size="small"
                         />
                         <TextField
