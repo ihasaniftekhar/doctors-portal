@@ -47,7 +47,7 @@ const BookingModal = ({ openBooking, handleBookingClose, booking, date, setBooki
         }
 
         // send data
-        fetch('http://localhost:5000/appointments', {
+        fetch('https://dry-sierra-02716.herokuapp.com/appointments', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'

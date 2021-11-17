@@ -21,32 +21,20 @@ const useFirebase = () => {
     const registerUser = (email, password, name, history) => {
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                // Signed in 
-                const user = userCredential.user;
                 setAuthError('');
                 const newUser = { email, displayName: name };
-                // send name to firebase
                 setUser(newUser);
-
                 saveUser(email, name, 'POST');
 
                 updateProfile(auth.currentUser, {
                     displayName: name
                 }).then(() => {
-                    // Profile updated!
-                    // ...
-                }).catch((error) => {
-                    // An error occurred
-                    // ...
-                });
+                })
                 history.replace('/');
-                // ...
             })
             .catch((error) => {
-                const errorCode = error.code;
                 const errorMessage = error.message;
-                setAuthError(errorMessage)
-                // ..
+                setAuthError(errorMessage);
             })
             .finally(() => setIsLoading(false));
     }
@@ -61,7 +49,6 @@ const useFirebase = () => {
                 // ...
             })
             .catch((error) => {
-                const errorCode = error.code;
                 const errorMessage = error.message;
                 setAuthError(errorMessage);
             })
@@ -79,20 +66,12 @@ const useFirebase = () => {
                 history.replace(destination);
                 // ...
             }).catch((error) => {
-                // Handle Errors here.
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                // The email of the user's account used.
-                const email = error.email;
-                // The AuthCredential type that was used.
-                const credential = GoogleAuthProvider.credentialFromError(error);
-                // ...
             })
             .finally(() => setIsLoading(false));
     };
 
     useEffect(() => {
-        fetch(`http://localhost:5000/users/${user.email}`)
+        fetch(`https://dry-sierra-02716.herokuapp.com/users/${user.email}`)
             .then(res => res.json())
             .then(data => setAdmin(data.admin))
     }, [user.email]);
@@ -109,7 +88,7 @@ const useFirebase = () => {
 
     const saveUser = (email, displayName, method) => {
         const user = { email, displayName };
-        fetch('http://localhost:5000/users', {
+        fetch('https://dry-sierra-02716.herokuapp.com/users', {
             method: method,
             headers: {
                 'content-type': 'application/json'

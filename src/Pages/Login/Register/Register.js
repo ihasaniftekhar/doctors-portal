@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import login from '../../../images/login.png'
 import { Alert, Button, CircularProgress, Container, Grid, TextField, Typography } from '@mui/material';
-import { NavLink, useHistory, useLocation } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import useAuth from '../../../hooks/useAuth';
 
 const Register = () => {
 
     const [loginData, setLoginData] = useState({});
-
     const { user, registerUser, isLoading, authError } = useAuth();
 
     const history = useHistory();
@@ -21,7 +20,7 @@ const Register = () => {
     }
 
     const handleLoginSubmit = (e) => {
-        if (loginData.password != loginData.password2) {
+        if (loginData.password !== loginData.password2) {
             alert("Your Password didn't match")
         }
 
